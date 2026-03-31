@@ -1,4 +1,4 @@
-# TaskMaster — Phase 1
+# TaskMaster
 
 A full-stack task management app built with the MERN stack.
 
@@ -122,9 +122,3 @@ GET /api/auth/me
 Authorization: Bearer <your_jwt_token>
 ```
 
-## Phase Roadmap
-
-- ✅ **Phase 1** — Backend + Frontend Auth (current)
-- ⬜ **Phase 2** — Task CRUD (create, read, update, delete)
-- ⬜ **Phase 3** — Task filters, priority, due dates
-- ⬜ **Phase 4** — Team collaboration + real-time updates

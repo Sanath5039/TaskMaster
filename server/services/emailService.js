@@ -6,9 +6,8 @@ const nodemailer = require('nodemailer');
  */
 const createTransporter = () => {
   return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT) || 587,
-    secure: false, // use false for port 587
+    host: process.env.EMAIL_HOST || 'smtp.mailtrap.io',
+    port: process.env.EMAIL_PORT || 2525,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -18,22 +17,22 @@ const createTransporter = () => {
 
 /**
  * Send an OTP code to a user's email
- * @param {string} to
- * @param {string} name
- * @param {string} otp
+ * @param {string} to 
+ * @param {string} name 
+ * @param {string} otp 
  * @param {string} purpose - 'signup' or 'login'
  */
 const sendOTPEmail = async (to, name, otp, purpose = 'signup') => {
   const transporter = createTransporter();
-
+  
   const isSignup = purpose === 'signup';
-  const subject = isSignup
-    ? '✨ TaskMaster: Verify your email address'
+  const subject = isSignup 
+    ? '✨ TaskMaster: Verify your email address' 
     : '🛡️ TaskMaster: Your login verification code';
-
+  
   const title = isSignup ? 'Welcome to TaskMaster!' : 'Security Verification';
-  const actionText = isSignup
-    ? 'To complete your registration, please use the following verification code:'
+  const actionText = isSignup 
+    ? 'To complete your registration, please use the following verification code:' 
     : 'A login attempt was made using your credentials. Please enter the following code to continue:';
 
   const html = `
@@ -59,7 +58,7 @@ const sendOTPEmail = async (to, name, otp, purpose = 'signup') => {
         </div>
         <div class="content">
           <div class="welcome">${title}</div>
-          <p class="description">Hi ${name || 'User'},</p>
+          <p class="description">Hi ${name},</p>
           <p class="description">${actionText}</p>
           
           <div class="otp-box">${otp}</div>
@@ -78,24 +77,12 @@ const sendOTPEmail = async (to, name, otp, purpose = 'signup') => {
     </html>
   `;
 
-  try {
-    console.log('👉 Sending OTP email to:', to);
-    console.log('EMAIL_HOST:', process.env.EMAIL_HOST);
-    console.log('EMAIL_USER exists:', !!process.env.EMAIL_USER);
-    console.log('EMAIL_PASS exists:', !!process.env.EMAIL_PASS);
-
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
-      to,
-      subject,
-      html,
-    });
-
-    console.log('✅ OTP email sent:', info.response);
-  } catch (error) {
-    console.error('❌ OTP email send failed:', error);
-    throw error;
-  }
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM || '"TaskMaster" <no-reply@taskmaster.app>',
+    to,
+    subject,
+    html,
+  });
 };
 
 module.exports = {

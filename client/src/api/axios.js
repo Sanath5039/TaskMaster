@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://taskmaster-c4xs.onrender.com',
-  withCredentials: true,
+  baseURL: import.meta.env.MODE === 'production' ? '' : 'http://localhost:5000',
 });
 
 // Attach token to every request

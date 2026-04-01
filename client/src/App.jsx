@@ -6,7 +6,6 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import ProjectDetails from './pages/ProjectDetails';
-import ProjectActivity from './pages/ProjectActivity';
 import MyTasks from './pages/MyTasks';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
@@ -42,14 +41,6 @@ function App() {
             element={
               <ProtectedRoute>
                 <ProjectDetails />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/projects/:id/activity"
-            element={
-              <ProtectedRoute>
-                <ProjectActivity />
               </ProtectedRoute>
             }
           />

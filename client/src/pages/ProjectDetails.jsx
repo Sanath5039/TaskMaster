@@ -7,6 +7,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import CreateTaskModal from '../components/CreateTaskModal';
 import ManageMembersModal from '../components/ManageMembersModal';
 import DashboardLayout from '../components/DashboardLayout';
+import ActivityTimeline from '../components/ActivityTimeline';
 
 function ProjectDetails() {
   const { id } = useParams();
@@ -16,6 +17,7 @@ function ProjectDetails() {
   const [loading, setLoading] = useState(true);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
+  const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
 
   useEffect(() => {
     loadProjectAndTasks();
@@ -269,10 +271,10 @@ function ProjectDetails() {
                </button>
             )}
             
-            <Link to={`/projects/${id}/activity`} className="text-xs font-bold text-[var(--text-secondary)] hover:text-white bg-[var(--bg-secondary)] hover:bg-[var(--bg-hover)] px-3 py-1.5 rounded-md transition border border-[var(--border)] flex items-center gap-1.5 shadow-sm">
+            <button onClick={() => setIsActivityModalOpen(true)} className="text-xs font-bold text-[var(--text-secondary)] hover:text-white bg-[var(--bg-secondary)] hover:bg-[var(--bg-hover)] px-3 py-1.5 rounded-md transition border border-[var(--border)] flex items-center gap-1.5 shadow-sm">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               Activity Log
-            </Link>
+            </button>
           </div>
         </div>
         
@@ -442,6 +444,33 @@ function ProjectDetails() {
           ))}
         </div>
       </DragDropContext>
+
+      {/* Activity Timeline Side Drawer */}
+      {isActivityModalOpen && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-[#0F172A]/80 backdrop-blur-sm z-40 transition-opacity" 
+            onClick={() => setIsActivityModalOpen(false)}
+          ></div>
+          
+          {/* Drawer */}
+          <div className="fixed top-0 right-0 h-full w-full sm:w-[400px] border-l border-[var(--border)] bg-[var(--bg-primary)] shadow-2xl z-50 flex flex-col transform transition-transform duration-300 translate-x-0">
+            <div className="flex items-center justify-between p-5 border-b border-[var(--border)] bg-[var(--bg-primary)] sticky top-0 z-10">
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">Project History</h2>
+              <button 
+                onClick={() => setIsActivityModalOpen(false)}
+                className="p-1.5 rounded-md text-[var(--text-secondary)] hover:text-white hover:bg-[var(--error-bg)] transition-colors border border-transparent hover:border-red-500/30"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 scrollbar-thin">
+              <ActivityTimeline projectId={id} />
+            </div>
+          </div>
+        </>
+      )}
 
       {isTaskModalOpen && (
         <CreateTaskModal

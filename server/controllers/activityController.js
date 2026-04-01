@@ -14,7 +14,7 @@ exports.getProjectActivity = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Project not found' });
     }
 
-    const hasAccess = project.owner.toString() === req.user.id || 
+    const hasAccess = project.createdBy.toString() === req.user.id || 
                       project.members.some(m => m.user.toString() === req.user.id);
 
     if (!hasAccess) {

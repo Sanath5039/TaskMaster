@@ -322,108 +322,109 @@ function ProjectDetails() {
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                                className={`bg-[var(--bg-card)] p-3.5 rounded-xl border ${
-                                  snapshot.isDragging ? 'border-[var(--accent)] shadow-xl scale-[1.02] z-50 transform cursor-grabbing' : 
-                                  (!canDrag ? 'border-[var(--border)] opacity-95' : 'border-[var(--border)] hover:border-[var(--border-focus)] hover:shadow-md cursor-grab')
-                                } transition-all group relative`}
+                                className={`bg-[var(--bg-card)] p-4 rounded-xl border ${
+                                  snapshot.isDragging ? 'border-[var(--accent)] shadow-2xl scale-[1.02] z-50 cursor-grabbing' : 
+                                  (!canDrag ? 'border-[var(--border)] opacity-95' : 'border-[var(--border)] hover:border-[var(--border-focus)] hover:shadow-lg cursor-grab')
+                                } transition-all duration-200 group relative flex flex-col gap-3 min-w-0`}
                               style={provided.draggableProps.style}
                             >
-                              <div className="flex justify-between items-start mb-2 gap-2">
-                                <h3 className="font-semibold text-[var(--text-primary)] leading-tight">{task.title}</h3>
+                              <div className="flex justify-between items-start gap-3">
+                                <h3 className="font-semibold text-sm text-[var(--text-primary)] leading-snug truncate">{task.title}</h3>
                                 {isAdmin && (
-                                  <button onClick={() => handleDeleteTask(task._id)} className="text-[var(--text-muted)] hover:text-[var(--error)] opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                  <button onClick={(e) => { e.stopPropagation(); handleDeleteTask(task._id); }} className="text-[var(--text-muted)] hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 bg-[var(--bg-hover)] p-1 rounded-md">
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                   </button>
                                 )}
                               </div>
                               
                               {task.description && (
-                                 <p className="text-[var(--text-secondary)] text-sm mb-4 line-clamp-2">{task.description}</p>
+                                 <p className="text-[var(--text-secondary)] text-xs line-clamp-2 leading-relaxed">{task.description}</p>
                               )}
                               
-                              <div className="flex flex-wrap items-center gap-2 mt-auto pt-2">
+                              <div className="flex flex-wrap items-center gap-2 mt-auto">
                                 {task.priority && (
-                                  <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${getPriorityColor(task.priority)}`}>
+                                  <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded border border-white/10 ${getPriorityColor(task.priority)}`}>
                                     {task.priority}
                                   </span>
                                 )}
 
+                                {task.dueDate && (
+                                  <div className="text-[10px] font-medium px-2 py-1 rounded bg-[var(--bg-hover)] text-[var(--text-secondary)] flex items-center border border-[var(--border)]">
+                                    <svg className="w-3 h-3 mr-1 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                    {new Date(task.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric'})}
+                                  </div>
+                                )}
+                                
                                 {task.attachment?.filename && (
                                   <button 
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       downloadTaskAttachment(task._id, task.attachment.originalName);
                                     }}
-                                    className="flex items-center gap-2 text-[10px] font-bold bg-[var(--bg-secondary)] text-[var(--accent)] border border-[var(--border)] px-2 py-0.5 rounded-md hover:border-[var(--border-focus)] hover:bg-[var(--bg-hover)] transition-colors shadow-sm"
+                                    className="flex items-center gap-1.5 text-[10px] font-medium bg-[var(--bg-hover)] text-[var(--accent-light)] border border-[var(--border)] px-2 py-1 rounded hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all overflow-hidden max-w-[140px]"
                                     title={`Download ${task.attachment.originalName}`}
                                   >
-                                    <span>{getFileIcon(task.attachment.mimetype)}</span>
-                                    <span className="max-w-[80px] truncate">{task.attachment.originalName}</span>
-                                    <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                    <span className="opacity-80">{getFileIcon(task.attachment.mimetype)}</span>
+                                    <span className="truncate">{task.attachment.originalName}</span>
                                   </button>
                                 )}
+                              </div>
 
-                                {task.dueDate && (
-                                  <div className="text-xs font-medium px-2 py-0.5 rounded bg-[var(--bg-hover)] text-[var(--text-secondary)] inline-flex items-center">
-                                    <svg className="w-3 h-3 mr-1 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                                    {new Date(task.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric'})}
-                                  </div>
-                                )}
-                                
+                              <div className="flex items-center justify-between mt-1 pt-3 border-t border-[var(--border)]">
+                                <div className="flex-1">
+                                  {task.status === 'todo' && isAssignee && (
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); handleUpdateStatus(task._id, 'in-progress'); }}
+                                      className="text-[10px] font-bold uppercase tracking-wide bg-blue-500/10 text-blue-400 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded transition-all flex items-center justify-center gap-1.5 w-auto shadow-sm border border-blue-500/20 hover:border-blue-500"
+                                    >
+                                      Start Work
+                                    </button>
+                                  )}
+
+                                  {task.status === 'in-progress' && isAssignee && (
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); handleSubmitForReview(task._id); }}
+                                      className="text-[10px] font-bold uppercase tracking-wide bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white px-3 py-1.5 rounded transition-all flex items-center justify-center gap-1.5 w-auto shadow-sm border border-amber-500/20 hover:border-amber-500 w-full"
+                                    >
+                                      Submit Review
+                                    </button>
+                                  )}
+
+                                  {task.status === 'pending_review' && isAdmin && (
+                                    <div className="flex gap-2">
+                                      <button
+                                        onClick={(e) => { e.stopPropagation(); handleApproveTask(task._id); }}
+                                        className="text-[10px] font-bold uppercase tracking-wide bg-green-500/10 text-green-500 hover:bg-green-600 hover:text-white px-3 py-1.5 rounded transition-all shadow-sm border border-green-500/20 hover:border-green-500 flex-1"
+                                      >
+                                        Approve
+                                      </button>
+                                      <button
+                                        onClick={(e) => { e.stopPropagation(); handleRejectTask(task._id); }}
+                                        className="text-[10px] font-bold uppercase tracking-wide bg-red-500/10 text-red-500 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded transition-all shadow-sm border border-red-500/20 hover:border-red-500 flex-1"
+                                      >
+                                        Reject
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+
                                 {task.assignedTo && (
                                   <div 
-                                    className="w-6 h-6 rounded-full bg-[#3b82f6] border border-[#2563eb] flex items-center justify-center text-[10px] font-bold text-white ml-auto"
+                                    className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-[10px] font-bold text-white shadow-sm ring-2 ring-[var(--bg-card)] flex-shrink-0 ml-3 relative"
                                     title={`Assigned to ${task.assignedTo.name}`}
                                   >
                                      {task.assignedTo.name.charAt(0)}
+                                     <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[var(--bg-card)]"></span>
                                   </div>
                                 )}
                               </div>
 
-                              {/* Review Action Buttons */}
-                              <div className="mt-4 pt-3 border-t border-[var(--border)] flex flex-wrap gap-2">
-                                {task.status === 'todo' && isAssignee && (
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); handleUpdateStatus(task._id, 'in-progress'); }}
-                                    className="text-[11px] font-semibold bg-[#DBEAFE] text-[#1D4ED8] hover:bg-[#2563EB] hover:text-white px-3 py-1.5 rounded-md transition-all flex items-center justify-center gap-1.5 w-full group shadow-sm"
-                                  >
-                                    🚀 Start Work
-                                  </button>
-                                )}
-
-                                {task.status === 'in-progress' && isAssignee && (
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); handleSubmitForReview(task._id); }}
-                                    className="text-[11px] font-semibold bg-[#FEF3C7] text-[#B45309] hover:bg-[#F59E0B] hover:text-white px-3 py-1.5 rounded-md transition-all flex items-center justify-center gap-1.5 w-full group shadow-sm"
-                                  >
-                                    ✨ Submit for Review
-                                  </button>
-                                )}
-
-                                {task.status === 'pending_review' && isAdmin && (
-                                  <>
-                                    <button
-                                      onClick={(e) => { e.stopPropagation(); handleApproveTask(task._id); }}
-                                      className="flex-1 text-[11px] font-semibold bg-[#DCFCE7] text-[#15803D] hover:bg-[#22C55E] hover:text-white px-3 py-1.5 rounded-md transition-all flex items-center justify-center gap-1.5 shadow-sm"
-                                    >
-                                      Approve
-                                    </button>
-                                    <button
-                                      onClick={(e) => { e.stopPropagation(); handleRejectTask(task._id); }}
-                                      className="flex-1 text-[11px] font-semibold bg-[#FEE2E2] text-[#B91C1C] hover:bg-[#EF4444] hover:text-white px-3 py-1.5 rounded-md transition-all flex items-center justify-center gap-1.5 shadow-sm"
-                                    >
-                                      Reject
-                                    </button>
-                                  </>
-                                )}
-
-                                {(task.submissionNote || task.reviewNote) && (
-                                  <div className="w-full mt-1 p-2 rounded bg-[var(--bg-hover)] border border-[var(--border)] text-[10px] text-[var(--text-secondary)] italic">
-                                    {task.submissionNote && <div>📝 Sub: {task.submissionNote}</div>}
-                                    {task.reviewNote && <div className="mt-1 text-orange-300">💬 Lead: {task.reviewNote}</div>}
-                                  </div>
-                                )}
-                              </div>
+                              {(task.submissionNote || task.reviewNote) && (
+                                <div className="mt-1 p-2.5 rounded bg-[var(--bg-secondary)] border border-[var(--border)] text-[10px] text-[var(--text-secondary)]">
+                                  {task.submissionNote && <div className="flex gap-1.5 leading-tight mb-1"><span className="opacity-70 font-semibold px-1 bg-white/5 rounded">Log</span> <span className="text-[var(--text-primary)]">{task.submissionNote}</span></div>}
+                                  {task.reviewNote && <div className="flex gap-1.5 leading-tight text-amber-500/90"><span className="opacity-70 font-semibold px-1 bg-amber-500/10 rounded">Feedback</span> <span>{task.reviewNote}</span></div>}
+                                </div>
+                              )}
                             </div>
                           )}
                         </Draggable>

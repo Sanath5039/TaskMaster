@@ -101,14 +101,7 @@ const ActivityTimeline = ({ projectId }) => {
   }
 
   return (
-    <div className="mt-12 group/timeline">
-      <div className="flex items-center gap-3 mb-8 px-1">
-        <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
-          <History className="w-4 h-4 text-indigo-400" />
-        </div>
-        <h3 className="text-lg font-bold text-[var(--text-primary)] tracking-tight">Project Activity</h3>
-        <div className="h-px flex-1 bg-gradient-to-r from-[var(--border)] to-transparent ml-2"></div>
-      </div>
+    <div className="group/timeline">
       
       <div className="relative space-y-1">
         {/* Continuous timeline line */}

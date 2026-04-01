@@ -39,9 +39,21 @@ app.get('/api/health', (req, res) => {
 res.json({ message: 'TaskMaster API is running ✅' });
 });
 
-// Root route
-app.get('/', (req, res) => {
-res.send('TaskMaster backend is running 🚀');
-});
+// Root route - only used in dev mode
+if (process.env.NODE_ENV !== 'production') {
+  app.get('/', (req, res) => {
+    res.send('TaskMaster backend is running 🚀');
+  });
+}
+
+// Serve frontend in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/dist')));
+
+  // Catch-all route to serve index.html for React Router
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
+  });
+}
 
 module.exports = app;
